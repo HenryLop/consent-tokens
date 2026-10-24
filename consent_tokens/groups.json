@@ -1,0 +1,30 @@
+{
+  "pay": {
+    "description": "Anything that can charge a card: checkout pages, buy buttons, card fields.",
+    "tools": ["Bash", "PowerShell", "WebFetch", "mcp__playwright__.*", "mcp__claude-in-chrome__.*"],
+    "patterns": [
+      "/(checkout|cart/pay|payments?|billing|subscribe|purchase|place-?order|donate|renew|upgrade)(/|\\?|#|&|\"|'|\\s|$)",
+      "\\b(buy now|place order|start (free )?trial|add (payment method|credit card)|pay now)\\b",
+      "\\b(card ?number|cvv|cvc|cardholder)\\b"
+    ]
+  },
+  "api": {
+    "description": "Paid APIs billed per call.",
+    "tools": ["Bash", "PowerShell", "WebFetch"],
+    "patterns": [
+      "api\\.anthropic\\.com/v1/(messages|batches)",
+      "api\\.openai\\.com",
+      "api\\.elevenlabs\\.io",
+      "generativelanguage\\.googleapis\\.com"
+    ]
+  },
+  "cloud": {
+    "description": "Billable cloud and domain operations.",
+    "tools": ["Bash", "PowerShell"],
+    "patterns": [
+      "\\b(gcloud|aws|az)\\s+billing\\b",
+      "\\bstripe\\s+(charges?|payment|subscriptions?|invoices?|create)\\b",
+      "\\bdomains?\\s+(register|buy|purchase)\\b"
+    ]
+  }
+}
