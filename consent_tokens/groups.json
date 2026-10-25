@@ -26,5 +26,16 @@
       "\\bstripe\\s+(charges?|payment|subscriptions?|invoices?|create)\\b",
       "\\bdomains?\\s+(register|buy|purchase)\\b"
     ]
+  },
+  "phone": {
+    "description": "Any command that acts on a physical phone or tablet over a debug bridge, read-only ones included. Calls pinned to an emulator serial are exempt.",
+    "tools": ["Bash", "PowerShell"],
+    "per_segment": true,
+    "exempt": ["(?:\\badb(?:\\.exe)?|\\$ADB)\\s+-s\\s+emulator-\\d+\\b"],
+    "patterns": [
+      "(?:\\badb(?:\\.exe)?|\\$ADB)\\s+(?:-[sedHP]\\b|shell|install|uninstall|push|pull|exec-out|emu\\b|connect|reboot|root|tcpip|logcat|forward|reverse|bugreport|sideload|backup|restore)",
+      "\\bscrcpy\\b",
+      "\\bidevice\\w*\\b"
+    ]
   }
 }

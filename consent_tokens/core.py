@@ -90,14 +90,36 @@ def revoke(session):
 
 
 # --- tool matching ---------------------------------------------------------
+SEGMENT_SPLIT = re.compile(r"[;&|\n]|\\n")
+
+
+def _segments(tool_input):
+    """Split a shell command into its separate calls, so one allowed call cannot cover another."""
+    cmd = (tool_input or {}).get("command") if isinstance(tool_input, dict) else None
+    if isinstance(cmd, str):
+        return [s for s in SEGMENT_SPLIT.split(cmd) if s.strip()]
+    return [json.dumps(tool_input or {}, ensure_ascii=False)]
+
+
 def find_violation(tool, tool_input, session):
-    """Return (group, matched_text) for the first closed group the call touches."""
+    """Return (group, matched_text) for the first closed group the call touches.
+
+    A group may set "per_segment": true and an "exempt" list. Each call in a command line is then
+    checked on its own, and a call that matches an exempt pattern (for example an adb call pinned
+    to an emulator) does not count as a violation."""
     text = json.dumps(tool_input or {}, ensure_ascii=False)
     for name, cfg in load_groups().items():
         if not any(re.fullmatch(t, tool) for t in cfg.get("tools", [".*"])):
             continue
-        for p in cfg["patterns"]:
-            m = re.search(p, text, re.I)
-            if m and not is_open(session, name):
-                return name, m.group(0)
+        if cfg.get("per_segment"):
+            texts = _segments(tool_input)
+            exempt = cfg.get("exempt", [])
+            texts = [t for t in texts if not any(re.search(e, t, re.I) for e in exempt)]
+        else:
+            texts = [text]
+        for t in texts:
+            for p in cfg["patterns"]:
+                m = re.search(p, t, re.I)
+                if m and not is_open(session, name):
+                    return name, m.group(0)
     return None
