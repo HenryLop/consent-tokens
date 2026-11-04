@@ -52,4 +52,4 @@ Counts from the author's own hook traces, 23 to 25 Oct 2026. Numbers only.
 
 MIT, see [LICENSE](LICENSE).
 
-Built with Claude Code. Write-up: https://made-by-asking.pages.dev/showcase/consent-tokens/
+Built with Claude Code. Write-up: https://henrylopezpardo.com/
